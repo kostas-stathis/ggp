@@ -1,21 +1,22 @@
 % Generic framework with library loaded
-:- solver(consult).
-:- lib(consult).
+
+:-load_solver(c, 'sc_solver').
+:-load_lib(c, 'printing').
 
 
 % Directory structure
-solver_dir('./solvers/').
+solvers_dir('./solvers/').
 games_dir('./games/').
 strategies_dir('./strategies/').
 players_dir('./players/').
 lib_dir('./lib/').
 
 
-solver(Mode, FileName):-
-		solver_dir(Dir),
+load_solver(Mode, FileName):-
+		solvers_dir(Dir),
 		load_component(Dir, FileName, Mode).
 
-lib(Mode, FileName):-
+load_lib(Mode, FileName):-
 		lib_dir(Dir),
 		load_component(Dir, FileName, Mode).
 
@@ -28,14 +29,14 @@ load_component(Dir, FileName, Mode):-
 				exists_file(SolverDesc)
 				-> 
 				(
-					Mode = consult
+					Mode = c
 					-> 
 						consult(SolverDesc)
 					; 
 						reconsult(SolverDesc)
 				)
 				; 
-				writelistnl([SolverDesc,' does not exist!')
+				writelistnl([SolverDesc,' does not exist!'])
 			)
 			;
 			writelistnl([Dir,' does not exist!'])
@@ -56,8 +57,6 @@ consult_component(game=Game):-
 consult_component(rules=Rules):-
 		consult_rules(Rules).
 
-
-
 consult_game(Game):-
 	atomic_list_concat(['./',games,'/', Solver], SolverDesc),
 		consult(SolverDesc),
@@ -73,6 +72,7 @@ consult_game(Game):-
 - domain independent solver and library, 
 - the game dependent rules, 
 - and the initial instance of the game
-*/
+
 composition(pd:c1, [rules=spec1]).
 composition(pd:c2, [game=pd, rules=spec2, lib=games_lib]).
+*/
