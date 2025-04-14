@@ -1,48 +1,36 @@
-% Generic framework with library loaded
-
-:-load_solver(c, 'sc_solver').
-:-load_lib(c, 'printing').
-
-
-% Directory structure
-solvers_dir('./solvers/').
+% --- Directory structure
+solvers_dir('./solvers').
 games_dir('./games/').
-strategies_dir('./strategies/').
+strategies_dir('./strategies').
 players_dir('./players/').
-lib_dir('./lib/').
+lib_dir('./lib').
 
 
-load_solver(Mode, FileName):-
-		solvers_dir(Dir),
-		load_component(Dir, FileName, Mode).
 
-load_lib(Mode, FileName):-
-		lib_dir(Dir),
-		load_component(Dir, FileName, Mode).
+%% load_solver(+Mode, +FileName)
+%  Loads a solver component from the solvers directory using Mode (e.g., c for consult, rc for reconsult).
+load_solver_component(Mode, FileName) :-
+	solvers_dir(Dir),
+	load_component(Dir, FileName, Mode).
 
-load_component(Dir, FileName, Mode):-	
-		(
-			exists_directory(Dir) 
-			-> 
-			atomic_list_concat([Dir, FileName], SolverDesc),
-			(
-				exists_file(SolverDesc)
-				-> 
-				(
-					Mode = c
-					-> 
-						consult(SolverDesc)
-					; 
-						reconsult(SolverDesc)
-				)
-				; 
-				writelistnl([SolverDesc,' does not exist!'])
-			)
-			;
-			writelistnl([Dir,' does not exist!'])
-		).
+%% load_lib_component(+Mode, +FileName)
+%  Loads a library component from the lib directory using Mode (e.g., c for consult, rc for reconsult).
+load_lib_component(Mode, FileName) :-
+	lib_dir(Dir),
+	load_component(Dir, FileName, Mode).
 
+%% load_component(+Dir, +FileName, +Mode)
+%  Constructs full path and consults or reconsults the file based on the given Mode.
+load_component(Dir, FileName, c) :-
+    atomic_list_concat([Dir, FileName, '.pl'], Path),
+    consult(Path).
 
+load_component(Dir, FileName, rc) :-
+    atomic_list_concat([Dir, FileName, '.pl'], Path),
+    reconsult(Path).
+
+?- load_lib_component(c, 'printing').
+?- load_solver_component(c, 'sc_solver').
 
 /*
 
