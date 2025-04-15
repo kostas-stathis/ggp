@@ -1,66 +1,39 @@
 % --- Directory structure
-solvers_dir('./solvers').
-games_dir('./games/').
-strategies_dir('./strategies').
-players_dir('./players/').
-lib_dir('./lib').
+dir(solvers, './solvers').
+dir(games, './games/').
+dir(strategies, './strategies/').
+dir(players, './players/').
+dir(lib, './lib').
 
+%%load_component(mode=M, type=T))
+load_comp(type=generic, dir=D, mode=M, file=File):-
+	dir(D, Dir),
+	atomic_list_concat([Dir, File], Path),
+	load_file(Path, M).
+load_comp(game=Name, dir=D, mode=M, file=File):-
+	dir(D, Dir),
+	atomic_list_concat([Dir, Name,'/', File], Path),
+	load_file(Path, M).
 
+load_file(Path, c) :- !, consult(Path).
+load_file(Path, rc) :- reconsult(Path).
 
-%% load_solver(+Mode, +FileName)
-%  Loads a solver component from the solvers directory using Mode (e.g., c for consult, rc for reconsult).
-load_solver_component(Mode, FileName) :-
-	solvers_dir(Dir),
-	load_component(Dir, FileName, Mode).
+consult_solver(file=Solver):-
+	load_comp(type=generic, dir=solvers, mode=c, file=Solver).
+consult_lib(file=L):-
+	load_comp(type=generic, dir=lib, mode=c, file=L).
+consult_rules(game=Name):-
+	load_comp(game=Name, dir=games, mode=c, file=rules),
+	load_comp(game=Name, dir=games, mode=c, file=utility).
+consult_initial(Name, Id, P1, P2):-
+	load_comp(game=Name, dir=games, mode=c, file=constructor),
+	Consructor =.. [Name, Id, P1, P2],
+	call(Constructor).
 
-%% load_lib_component(+Mode, +FileName)
-%  Loads a library component from the lib directory using Mode (e.g., c for consult, rc for reconsult).
-load_lib_component(Mode, FileName) :-
-	lib_dir(Dir),
-	load_component(Dir, FileName, Mode).
+consult_game(Name, Id, P1, P2):-
+	consult_lib(file=printing),
+	consult_solver(file=sc_solver),
+	consult_rules(game=Name),
+	consult_initial(Name, Id, P1, P2).
 
-%% load_component(+Dir, +FileName, +Mode)
-%  Constructs full path and consults or reconsults the file based on the given Mode.
-load_component(Dir, FileName, c) :-
-    atomic_list_concat([Dir, FileName, '.pl'], Path),
-    consult(Path).
-
-load_component(Dir, FileName, rc) :-
-    atomic_list_concat([Dir, FileName, '.pl'], Path),
-    reconsult(Path).
-
-?- load_lib_component(c, 'printing').
-?- load_solver_component(c, 'sc_solver').
-
-/*
-
-consult_components([]).
-consult_components([H|T]):-
-	consult_component(H),!,
-	consult_components(T).
-
-consult_component(game=Game):-	
-		consult_game(Game).
-
-consult_component(rules=Rules):-
-		consult_rules(Rules).
-
-consult_game(Game):-
-	atomic_list_concat(['./',games,'/', Solver], SolverDesc),
-		consult(SolverDesc),
-		atomic_list_concat(['./',games,'/', Game], GameDesc),
-		consult(GameDesc),
-		atomic_list_concat(['./',games,'/', Rules], RulesDesc),
-		consult(RulesDesc)
-	atomic_list_concat(['./',games,'/', Game], GameDesc),
-	consult(GameDesc),
-*/
-
-/* Composition contains the 
-- domain independent solver and library, 
-- the game dependent rules, 
-- and the initial instance of the game
-
-composition(pd:c1, [rules=spec1]).
-composition(pd:c2, [game=pd, rules=spec2, lib=games_lib]).
-*/
+?- consult_game(pd, s0, p1, p2).
