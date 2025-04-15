@@ -1,9 +1,9 @@
 % --- Directory structure
-dir(solvers, './solvers').
+dir(solvers, './solvers/').
 dir(games, './games/').
 dir(strategies, './strategies/').
 dir(players, './players/').
-dir(lib, './lib').
+dir(lib, './lib/').
 
 %%load_component(mode=M, type=T))
 load_comp(type=generic, dir=D, mode=M, file=File):-
@@ -20,14 +20,17 @@ load_file(Path, rc) :- reconsult(Path).
 
 consult_solver(file=Solver):-
 	load_comp(type=generic, dir=solvers, mode=c, file=Solver).
+
 consult_lib(file=L):-
 	load_comp(type=generic, dir=lib, mode=c, file=L).
+
 consult_rules(game=Name):-
 	load_comp(game=Name, dir=games, mode=c, file=rules),
 	load_comp(game=Name, dir=games, mode=c, file=utility).
+
 consult_initial(Name, Id, P1, P2):-
 	load_comp(game=Name, dir=games, mode=c, file=constructor),
-	Consructor =.. [Name, Id, P1, P2],
+	Constructor =.. [Name, Id, P1, P2],
 	call(Constructor).
 
 consult_game(Name, Id, P1, P2):-
