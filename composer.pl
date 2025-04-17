@@ -37,7 +37,6 @@ consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=Constructor, mode
 	call(ConstrCall).
 
 	
-
 consult_config(C):-
 	configuration(C, Config),
 	member(solver=S, Config),
@@ -45,9 +44,9 @@ consult_config(C):-
 	member(mode=M, Config),
 	consult_framework(solver=S, lib=L, mode=M),
 	member(game=Name, Config),
-	member(id=Id, Config),
 	member(player=P1, Config),
 	member(opponent=P2, Config),
+	member(id=Id, Config),
 	member(rules=R, Config),
 	member(utility=U, Config),
 	member(constructor=Ci, Config),
