@@ -6,3 +6,6 @@ writelist([H|T]):-
 writelistnl(L):-
         writelist(L),
         nl.
+
+system(Goal):-
+        predicate_property(system:Goal, built_in).

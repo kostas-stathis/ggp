@@ -22,8 +22,7 @@ holds(F, do(M, S)):- effect(F, M, S).
 holds(F, do(A, S)):- holds(F, S), \+ abnormal(F, A, S).
 */
 
-:- dynamic demo/3.
-:- multifile demo/3.
+:- dynamic pd/2.
 :- multifile pd/2.
 
 
@@ -41,7 +40,7 @@ demo(T, Class, holds(F, do(M, S))):-
 	demo(T, Class, effect(F, do(M, S), S)).
 demo(T, Class, holds(F, do(A, S))):- 
 	demo(T, Class, holds(F, S)), 
-	\+ demo(T, Class, abnormal(F, A, S)).
+	demo(T, Class, \+ abnormal(F, A, S)).
 
 demo_conj(_, _, []):- !.
 demo_conj(T, Class, [Head|Tail]):-
