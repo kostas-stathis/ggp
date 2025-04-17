@@ -22,6 +22,11 @@ holds(F, do(M, S)):- effect(F, M, S).
 holds(F, do(A, S)):- holds(F, S), \+ abnormal(F, A, S).
 */
 
+:- dynamic demo/3.
+:- multifile demo/3.
+:- multifile pd/2.
+
+
 demo(T, Class, game(F,F)):- 
 	demo(T, Class, final(F)).  
 
@@ -30,18 +35,18 @@ demo(T, Class, game(S,F)):-
 	demo(T, Class, legal(M,S)), 
 	demo(T, Class, game(do(M,S),F)).
 
-demo(T, Class, holds(F, S)):- 
+demo(T, Class, holds(F, _)):- 
 	demo(T, Class, initially(F)).
-demo(T, Class, holds(F, do(M, S)):- 
+demo(T, Class, holds(F, do(M, S))):- 
 	demo(T, Class, effect(F, do(M, S), S)).
-demo(T, Class, holds(F, do(A, S)):- 
+demo(T, Class, holds(F, do(A, S))):- 
 	demo(T, Class, holds(F, S)), 
 	\+ demo(T, Class, abnormal(F, A, S)).
 
-demo_conj(T, Class, []):- !.
-demo_conj(T, Class, [H|T]):-
-	demo(T, Class, H),
-	demo_conj(T, Class, T).
+demo_conj(_, _, []):- !.
+demo_conj(T, Class, [Head|Tail]):-
+	demo(T, Class, Head),
+	demo_conj(T, Class, Tail).
 
 demo(T, Class, \+ Goal):-
 	!,

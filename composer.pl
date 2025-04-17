@@ -24,27 +24,25 @@ consult_solver(file=Solver, mode=M):-
 consult_lib(file=L, mode=M):-
 	load_comp(type=generic, dir=lib, mode=M, file=L).
 
-consult_rules(game=Name, Mode=M, file=Rules):-
+consult_rules(game=Name, mode=M, file=Rules):-
 	load_comp(game=Name, dir=games, mode=M, file=Rules).
 
-consult_utility(game=Name, Mode=M, file=Utility, mode=M):-
+consult_utility(game=Name, mode=M, file=Utility):-
 	load_comp(game=Name, dir=games, mode=M, file=Utility).
 
 consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=Constructor, mode=M):-
 	load_comp(game=Name, dir=games, mode=M, file=Constructor),
-	Constructor =.. [Name, Id, P1, P2],
-	call(Constructor).
+	atomic_list_concat([Name, '_call'], Constr),
+	ConstrCall =.. [Constr, Id, P1, P2],
+	call(ConstrCall).
+
+	
 
 consult_config(C):-
-	consult_in_mode(C,c).
-
-reconsult_config(C):-
-	consult_in_mode(C,rc).
-
-consult_in_mode(C,M):-
 	configuration(C, Config),
 	member(solver=S, Config),
 	member(lib=L, Config),
+	member(mode=M, Config),
 	consult_framework(solver=S, lib=L, mode=M),
 	member(game=Name, Config),
 	member(id=Id, Config),
@@ -52,21 +50,18 @@ consult_in_mode(C,M):-
 	member(opponent=P2, Config),
 	member(rules=R, Config),
 	member(utility=U, Config),
-	member(constructor=C, Config),
-	member(mode=M, Config),
-	consult_game(Name, Id, P1, P2, R, U, C, M).
+	member(constructor=Ci, Config),
+	consult_game(game=Name, id=Id, player=P1, opponent=P2, rules=R, utility=U, constructor=Ci, mode=M).
 
 consult_framework(solver=S, lib=L, mode=M):-
 	consult_solver(file=S, mode=M),
 	consult_lib(file=L,	mode=M).
 
-consult_game(game=Name, id=Id, player=P1, opponent=P2, rules=R, utility=U, constuctor=C, mode=M):-
+consult_game(game=Name, id=Id, player=P1, opponent=P2, rules=R, utility=U, constructor=C, mode=M):-
 	consult_rules(game=Name, mode=M, file=R),
 	consult_utility(game=Name, mode=M, file=U),
 	consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=C, mode=M).
 
-
-?- consult_config(1).
 
 configuration(1,[
 				game = pd, 
@@ -77,7 +72,8 @@ configuration(1,[
 				lib=printing,
 				rules= rules_single,
 				utility=utility_single,
-				constructor=constructor_single	
+				constructor=constructor_single,
+				mode=c	
 				]).
 
 configuration(2,[
@@ -89,5 +85,8 @@ configuration(2,[
 				lib=printing,
 				rules= rules_multi,
 				utility=utility_multi,
-				constructor=constructor_multi	
+				constructor=constructor_multi,
+				mode=c		
 				]).
+
+?-consult_config(2).
