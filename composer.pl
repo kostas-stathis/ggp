@@ -39,10 +39,12 @@ consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=Constructor, mode
 	
 consult_config(C):-
 	configuration(C, Config),
+	% consult game framework
 	member(solver=S, Config),
 	member(lib=L, Config),
 	member(mode=M, Config),
 	consult_framework(solver=S, lib=L, mode=M),
+	% consult game
 	member(game=Name, Config),
 	member(player=P1, Config),
 	member(opponent=P2, Config),
@@ -61,7 +63,7 @@ consult_game(game=Name, id=Id, player=P1, opponent=P2, rules=R, utility=U, const
 	consult_utility(game=Name, mode=M, file=U),
 	consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=C, mode=M).
 
-
+% Here are the configurations we need to test
 configuration(1,[
 				game = pd, 
 				id = s0, 

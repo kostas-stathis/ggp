@@ -37,10 +37,10 @@ demo(T, Class, game(S,F)):-
 demo(T, Class, holds(F, T)):- 
 	demo(T, Class, initially(F)).
 demo(T, Class, holds(F, do(M, S))):- 
-	demo(T, Class, effect(F, do(M, S), S)).
-demo(T, Class, holds(F, do(A, S))):- 
+	demo(T, Class, effect(F, M, S)).
+demo(T, Class, holds(F, do(M, S))):- 
 	demo(T, Class, holds(F, S)), 
-	demo(T, Class, \+ abnormal(F, A, S)).
+	demo(T, Class, \+ abnormal(F, M, S)).
 
 demo_conj(_, _, []):- !.
 demo_conj(T, Class, [Head|Tail]):-

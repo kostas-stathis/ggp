@@ -19,3 +19,12 @@ game(S,F):- \+ final(S), legal(M,S), game(do(M,S),F).
 holds(F, S):- initially(F, S).
 holds(F, do(M, S)):- effect(F, M, S).
 holds(F, do(A, S)):- holds(F, S), \+ abnormal(F, A, S).
+
+
+/*
+
+holds(F, Id:S):- initially(F, Id:S).
+holds(F, Id:do(M, S)):- effect(F, M, Id:S).
+holds(F, Id:do(A, S)):- holds(F, Id:S), \+ abnormal(F, A, Id:S).
+
+*/
