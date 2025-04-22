@@ -32,9 +32,9 @@ consult_utility(game=Name, mode=M, file=Utility):-
 
 consult_initial(game=Name, id=Id, player=P1, opponent=P2, file=Constructor, mode=M):-
 	load_comp(game=Name, dir=games, mode=M, file=Constructor),
-	atomic_list_concat([Name, '_call'], Constr),
-	ConstrCall =.. [Constr, Id, P1, P2],
-	call(ConstrCall).
+,
+	GameInstance =.. [Name, Id, P1, P2],
+	construct_game(GameInstance).
 
 	
 consult_config(C):-

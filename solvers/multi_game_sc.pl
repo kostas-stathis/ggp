@@ -22,42 +22,45 @@ holds(F, do(M, S)):- effect(F, M, S).
 holds(F, do(A, S)):- holds(F, S), \+ abnormal(F, A, S).
 */
 
-:- dynamic demo/3.
-:- multifile demo/3.
-:- multifile pd/2.
+:- dynamic demo/2.
+:- dynamic rule/3.
+:- dynamic instance_of/2.
+:- multifile demo/2.
+:- multifile instance_of/2.
 
-demo(T, Class, game(F,F)):- 
-	demo(T, Class, final(F)).  
+demo(T, game(F,F)):- 
+	demo(T, final(F)).  
 
-demo(T, Class, game(S,F)):- 
-	demo(T, Class, \+ final(S)), 
-	demo(T, Class, legal(M,S)), 
-	demo(T, Class, game(do(M,S),F)).
+demo(T, game(S,F)):- 
+	demo(T, \+ final(S)), 
+	demo(T, legal(M,S)), 
+	demo(T, game(do(M,S),F)).
 
-demo(T, Class, holds(F, T)):- 
-	demo(T, Class, initially(F)).
-demo(T, Class, holds(F, do(M, S))):- 
-	demo(T, Class, effect(F, M, S)).
-demo(T, Class, holds(F, do(M, S))):- 
-	demo(T, Class, holds(F, S)), 
-	demo(T, Class, \+ abnormal(F, M, S)).
+demo(T, holds(F, T)):-
+	demo(T, initially(F)).
+demo(holds(F, do(M, S))):- 
+	demo(T, effect(F, M, S)).
+demo(T, holds(F, do(M, S))):- 
+	demo(T, holds(F, S)), 
+	demo(T, \+ abnormal(F, M, S)).
 
-demo_conj(_, _, []):- !.
-demo_conj(T, Class, [Head|Tail]):-
-	demo(T, Class, Head),
-	demo_conj(T, Class, Tail).
+demo_conj(_, []):- !.
+demo_conj(T, [Goal|Goals]):-
+	demo(T, Goal),
+	demo_conj(T, Goals).
 
-demo(T, Class, \+ Goal):-
+demo(T, \+ Goal):-
 	!,
-	\+ demo(T, Class, Goal).
+	\+ demo(T, Goal).
 demo(_,_,Goal):-
 	system(Goal),
 	!,
 	call(Goal).
-demo(T, Class, Goal):-
-	ClassRule =..[Class, Goal, Body],
-	call(ClassRule),
-	demo_conj(T, Class, Body).
+demo(T, Goal):-
+	instance_of(T, Class), % no inheritance currently
+	rule(T, Class, Goal, Body),
+	demo_conj(T, Body).
+
 
 
 
