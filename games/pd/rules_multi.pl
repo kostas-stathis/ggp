@@ -11,15 +11,14 @@ rule(pd, legal(move(P, M), S),
 		holds(control(P), S)
 	]).
 
-rule(pd, possible(move(P,'D'), S), 
+rule(pd, possible(move(P,M), S), 
 	[
-		holds(player(P), S)
-	]).
-rule(pd, possible(move(P,'C'), S), 
-	[
+		available(move(P, M), S),
 		holds(player(P), S)
 	]).
 
+rule(pd, available(move(_, 'D'),_), []).
+rule(pd, available(move(_, 'C'),_), []).
 
 rule(pd, effect(did(P, M), move(P, M), _S),[]).
 

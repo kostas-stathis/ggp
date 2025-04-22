@@ -1,5 +1,5 @@
-pd(Id, P1, P2):-
-    assert(initial(Id)),
+construct_game(pd(Id, P1, P2)):-
+    atomic(Id),
     assert(initially(player(P1), Id)),
     assert(initially(player(P2), Id)),
     assert(initially(control(P1), Id)),

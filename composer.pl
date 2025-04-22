@@ -89,4 +89,4 @@ configuration(2,[
 				mode=c		
 				]).
 
-?-consult_config(2).
+?-consult_config(1).
