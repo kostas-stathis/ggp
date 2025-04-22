@@ -1,7 +1,5 @@
 
 
-
-
 rule(pd, final(do(move(_P2, _M2), do(move(_P1, _M1), S))), 
 	[
 		atomic(S)
