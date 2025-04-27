@@ -43,7 +43,7 @@ demo(T, game(S,F)):-
 	demo(T, game(do(M,S),F)).
 
 demo(T, holds(F, T)):-
-	demo(T, initially(F)).
+	demo(T, initially(F, T)).
 demo(T, holds(F, do(M, S))):- 
 	demo(T, effect(F, M, S)).
 demo(T, holds(F, do(M, S))):- 

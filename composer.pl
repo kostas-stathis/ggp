@@ -89,4 +89,13 @@ configuration(2,[
 				mode=c		
 				]).
 
-?-consult_config(1).
+configuration(3,[
+				game = pd, 
+				id = s1, 
+				player = p3, 
+				opponent = p4,
+				constructor=constructor_multi, % Added constructor
+				mode=c	
+				]).
+
+?-consult_config(2).
