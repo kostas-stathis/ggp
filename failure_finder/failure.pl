@@ -9,13 +9,16 @@ Usage:
 */
 
 % This file is part of the Failure Finder library.
-goal_failure(Goal, ):-
+explain_failure(Goal, uknown(Goal)):-
     \+ defined(Goal), !.
-
-find_failure(Goal, Goal:(Succeeded, Failed, Untried)) :-
+explain_failure(Goal, Goal:([], [false], [])) :-
+    defined(Goal),
+    \+ clause(Goal, _), !.
+explain_failure(Goal, Goal:([], [], [])) :-
     defined(Goal), !,
     clause(Goal, Body),
-    find_failures(Body, Succeeded, Failed, Untried).
+    explain_failures(Body, ExplanationFailure).
+
 
 /* I think it is important to have the following
 
@@ -24,13 +27,6 @@ Head: Succeeded, Failure, Untried.
 For Failure we need the deep failure.
 
 */
-
-find_failures(true, [true], [], []) :- !.
-
-find_failures((Head,Tail), [Head|Rest], F, Untried) :-
-    defined(Head),
-    find_failure(Head, HeadFailure),
-    find_failures(Tail, TailFailures).
 
 defined(Goal) :-
     functor(Goal, Functor, Arity),
