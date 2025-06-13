@@ -19,6 +19,7 @@ explain_failure(Goal, Goal:([], [], [])) :-
     clause(Goal, Body),
     explain_failures(Body, ExplanationFailure).
 
+explain_failures(true, []).
 
 /* I think it is important to have the following
 
