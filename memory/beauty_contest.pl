@@ -65,6 +65,34 @@ holds(goal(P, D), S):-
 	Target is Multiplier * Average,
 	distance(Target, M, D).
 
+holds(wins(P,M,D), S):- 
+	findall(Pi:X, finally(goal(Pi, X), S), List), 
+	sort(List, Sorted),
+    winner(Sorted, P:D),
+	finally(did(P, M), S).
+
+holds(loses(P,M,D), S):-
+	findall(Pi:X, finally(goal(Pi, X), S), List), 
+	sort(List, Sorted),
+	member(P:D, Sorted),
+	finally(did(P, M), S),
+	\+ finally(wins(P, M, D), S).
+
+winner(PlayerDistances, Winner):- 
+    winners(PlayerDistances, [], Winners),   
+	member(Winner, Winners).
+
+
+winners([P:D|Rest], [], Winners):-
+	!,
+	winners(Rest, [P:D], Winners).
+winners([P:D|Rest], Acc, Winners):-
+    Acc=[_:D], % Head of list equals distance as previous.
+	!,
+	winners(Rest, [P:D|Acc], Winners).
+winners(_, Winners, Winners).
+
+
 
 % Library predicates
 % Calculate the distance between the target and the move made.
