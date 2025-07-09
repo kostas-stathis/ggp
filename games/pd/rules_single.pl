@@ -13,7 +13,7 @@ abnormal(control(P), move(P, _M), _S).
 finally(outcome(P1,M1,U1,P2,M2,U2), S):-
 	holds(role(P1, row), S),	
 	holds(did(P1, M1), S),	
-	holds(role(P1, col), S),
+	holds(role(P2, col), S),
 	holds(did(P2, M2), S),
 	payoffPD(M1, M2, U1, U2).
 
