@@ -9,9 +9,14 @@ Usage:
 */
 
 % This file is part of the Failure Finder library.
-explain_failure(Goal, uknown(Goal)):-
-    \+ defined(Goal), !.
-explain_failure(Goal, Goal:([], [false], [])) :-
+
+explain_failure(Goal, Goal=failed_builtin):-
+    builtin(Goal), !,
+    \+ call(Goal).
+explain_failure(Goal, Goal=undefined):-
+    % not builtin
+    undefined(Goal), !.
+explain_failure(Goal, Goal=failed) :-
     defined(Goal),
     \+ clause(Goal, _), !.
 explain_failure(Goal, Goal:([], [], [])) :-
@@ -29,9 +34,16 @@ For Failure we need the deep failure.
 
 */
 
+undefined(Goal) :-
+    functor(Goal, Functor, Arity),
+    \+ current_predicate(Functor/Arity).
+
 defined(Goal) :-
     functor(Goal, Functor, Arity),
     current_predicate(Functor/Arity).
+
+builtin(Goal) :-
+    predicate_property(Goal, built_in).
 
 
 p(X):- q(X), r(X).
