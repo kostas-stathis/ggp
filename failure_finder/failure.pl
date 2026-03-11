@@ -17,8 +17,12 @@ explain_failure(Goal, Goal=undefined):-
     % not builtin
     undefined(Goal), !.
 explain_failure(Goal, Goal=failed) :-
+    % implies defined
+    clause(Goal, Body),
+explain_failure(Goal, Goal=failed) :-
     defined(Goal),
     \+ clause(Goal, _), !.
+
 explain_failure(Goal, Goal:([], [], [])) :-
     defined(Goal), !,
     clause(Goal, Body),

@@ -69,7 +69,7 @@ finally(encounter(P1,M1,U1, P2,M2,U2), S):-
 	holds(move(P2, M2), S),
 	holds(role(P2, col), S),
 	P1 \= P2,
-	holds(payoff(M1, M2, U1, U2), S).
+	payoff(M1, M2, U1, U2).
 
 finally(util(P1, U1), S):-
 	finally(encounter(P1, _, U1, _, _, _), S).
