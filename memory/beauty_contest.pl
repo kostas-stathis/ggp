@@ -58,25 +58,25 @@ effect(did(P, M), move(P, M), _S).
 abnormal(control(P), move(P, _M), _S).
 
 % What holds finally: the outcome with players, Moves, and Utilities.
-holds(goal(P, D), S):-
+holds(distance(P, Distance), S):-
 	finally(did(P, M), S),	
 	average(S, Average),
 	finally(multiplier(Multiplier), S),
 	Target is Multiplier * Average,
-	distance(Target, M, D).
+	is_distance(Target, M, Distance).
 
-holds(wins(P,M,D), S):- 
-	findall(Pi:X, finally(goal(Pi, X), S), List), 
-	sort(List, Sorted),
-    winner(Sorted, P:D),
+holds(wins(P,M,Distance), S):- 
+	findall(Pi:D, finally(distance(Pi, D), S), Distances), 
+	sort(Distances, Sorted),
+    winner(Sorted, P:Distance),
 	finally(did(P, M), S).
 
-holds(loses(P,M,D), S):-
-	findall(Pi:X, finally(goal(Pi, X), S), List), 
-	sort(List, Sorted),
-	member(P:D, Sorted),
+holds(loses(P,M,Distance), S):-
+	findall(Pi:D, finally(distance(Pi, D), S), Distances), 
+	sort(Distances, Sorted),
+	member(P:Distance, Sorted),
 	finally(did(P, M), S),
-	\+ finally(wins(P, M, D), S).
+	\+ finally(wins(P, M, Distance), S).
 
 winner(PlayerDistances, Winner):- 
     winners(PlayerDistances, [], Winners),   
@@ -96,7 +96,7 @@ winners(_, Winners, Winners).
 
 % Library predicates
 % Calculate the distance between the target and the move made.
-distance(Target, M, D):-
+is_distance(Target, M, D):-
 	(  Target > M
 	-> D is Target - M
 	;  D is M - Target
@@ -115,15 +115,9 @@ average(S, Average):-
 
 % Calculate the average of a list of numbers.
 avg( List, Avg ):- 
-    sum( List, Sum ),
+    sum_list( List, Sum ),
     length( List, Length), 
     (  Length > 0
     -> Avg is Sum / Length
     ;  write('List is empty, cannot compute average'), nl, fail
     ).
-
-% Calculate the sum of a list of numbers.
-sum( [], 0 ).
-sum( [H|T], Sum ):- 
-	sum( T, TailSum ),
-	Sum is H + TailSum.
