@@ -83,11 +83,12 @@ winner(PlayerDistances, Winner):-
 	member(Winner, Winners).
 
 
+% 
 winners([P:D|Rest], [], Winners):-
 	!,
 	winners(Rest, [P:D], Winners).
 winners([P:D|Rest], Acc, Winners):-
-    Acc=[_:D], % Head of list equals distance as previous.
+    Acc=[_:D|_], % Head of list equals distance as previous.
 	!,
 	winners(Rest, [P:D|Acc], Winners).
 winners(_, Winners, Winners).
